@@ -609,19 +609,10 @@ void MSWindowsDesks::deskLeave(Desk *desk, HKL keyLayout)
     //
     // note that we must enable the window to activate it and we
     // need to disable the window on deskEnter.
-    else {
-      desk->m_foregroundWindow = getForegroundWindow();
-      if (desk->m_foregroundWindow != nullptr) {
-        EnableWindow(desk->m_window, TRUE);
-        SetActiveWindow(desk->m_window);
-        DWORD thisThread = GetWindowThreadProcessId(desk->m_window, nullptr);
-        DWORD thatThread = GetWindowThreadProcessId(desk->m_foregroundWindow, nullptr);
-
-        AttachThreadInput(thatThread, thisThread, TRUE);
-        SetForegroundWindow(desk->m_window);
-        AttachThreadInput(thatThread, thisThread, FALSE);
-      }
-    }
+    //
+    // fork: mouse-only sharing.  the keyboard stays on this computer, so
+    // we do not take the foreground away from the active window; it keeps
+    // receiving keys while the cursor is on a client.
   } else {
     // move hider window under the cursor center, raise, and show it
     SetWindowPos(desk->m_window, HWND_TOP, m_xCenter, m_yCenter, 1, 1, SWP_NOACTIVATE | SWP_SHOWWINDOW);
