@@ -410,7 +410,12 @@ static bool keyboardHookHandler(WPARAM wParam, LPARAM lParam)
   // local app will.  if on a client computer then grab keys as usual;
   // if the client is a windows system it'll synthesize the expected
   // character.  if not then it'll probably just do nothing.
-  if (g_mode != kHOOK_RELAY_EVENTS) {
+  //
+  // fork: mouse-only sharing.  the keyboard always stays on this computer,
+  // even while the cursor is on a client, so keys are never grabbed or
+  // translated for relaying; they pass through to the local system.
+  static const bool s_keyboardStaysLocal = true;
+  if (s_keyboardStaysLocal || g_mode != kHOOK_RELAY_EVENTS) {
     // we don't use virtual keys because we don't know what the
     // state of the numlock key is.  we'll hard code the scan codes
     // instead.  hopefully this works across all keyboards.

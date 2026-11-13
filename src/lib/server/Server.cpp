@@ -1539,7 +1539,7 @@ void Server::onKeyDown(KeyID id, KeyModifierMask mask, KeyButton button, const s
 
   // relay
   if (!m_keyboardBroadcasting && IKeyState::KeyInfo::isDefault(computers)) {
-    m_active->keyDown(id, mask, button, lang);
+    // fork: mouse-only sharing.  keys are never relayed to the active client.
   } else {
     if (!computers && m_keyboardBroadcasting) {
       computers = m_keyboardBroadcastingComputers.c_str();
@@ -1562,7 +1562,7 @@ void Server::onKeyUp(KeyID id, KeyModifierMask mask, KeyButton button, const cha
 
   // relay
   if (!m_keyboardBroadcasting && IKeyState::KeyInfo::isDefault(computers)) {
-    m_active->keyUp(id, mask, button);
+    // fork: mouse-only sharing.  keys are never relayed to the active client.
   } else {
     if (!computers && m_keyboardBroadcasting) {
       computers = m_keyboardBroadcastingComputers.c_str();
@@ -1586,8 +1586,7 @@ void Server::onKeyRepeat(KeyID id, KeyModifierMask mask, int32_t count, KeyButto
   );
   assert(m_active != nullptr);
 
-  // relay
-  m_active->keyRepeat(id, mask, count, button, lang);
+  // fork: mouse-only sharing.  keys are never relayed to the active client.
 }
 
 void Server::onMouseDown(ButtonID id)
